@@ -2,7 +2,6 @@ import { useState } from 'react'
 import ReactDOM from 'react-dom';
 import { Auth0Provider } from '@auth0/auth0-react';
 import './App.css'
-import React, { useState } from 'react';
 import SpotifyIntegration from './SpotifyIntegration';
 
 ReactDOM.render(
@@ -27,6 +26,11 @@ const App = () => {
   return (
     <div>
       <h1>Welcome to Rhyme Arcade!</h1>
+       <div className="outer-rec">
+        <div className='inner-rec'>
+          <h1>Please Select your Console</h1>
+        </div>
+      </div>
       {SpotifyIntegration}
       <SpotifyIntegration selectedGame={selectedGame} />
     </div>

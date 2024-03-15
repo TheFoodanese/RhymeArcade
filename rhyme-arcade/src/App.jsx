@@ -21,11 +21,12 @@ const App = () => {
   return (
     <div>
       <h1>Welcome to Rhyme Arcade!</h1>
-      <div className="outer-rec">
+       <div className="outer-rec">
         <div className='inner-rec'>
           <h1>Please Select your Console</h1>
         </div>
       </div>
+
       <PlatformSelection onSelect={handlePlatformSelect} />
       {selectedPlatform && (
         <GameSelection platform={selectedPlatform} onSelect={handleGameSelect} />
@@ -33,6 +34,9 @@ const App = () => {
       {selectedGame && (
         <SpotifyIntegration selectedGame={selectedGame} />
       )}
+      {SpotifyIntegration}
+    
+
     </div>
   );
 };

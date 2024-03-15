@@ -1,13 +1,19 @@
-import { useState } from 'react'
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Auth0Provider } from '@auth0/auth0-react';
-import './App.css'
+import PlatformSelection from './PlatformSelection';
+import GameSelection from './GameSelection';
 import SpotifyIntegration from './SpotifyIntegration';
+import './App.css'
 
 const App = () => {
+  const [selectedPlatform, setSelectedPlatform] = useState(null);
   const [selectedGame, setSelectedGame] = useState(null);
 
-  // Function to handle game selection
+  const handlePlatformSelect = (platform) => {
+    setSelectedPlatform(platform);
+  };
+
   const handleGameSelect = (game) => {
     setSelectedGame(game);
   };
@@ -20,8 +26,17 @@ const App = () => {
           <h1>Please Select your Console</h1>
         </div>
       </div>
+
+      <PlatformSelection onSelect={handlePlatformSelect} />
+      {selectedPlatform && (
+        <GameSelection platform={selectedPlatform} onSelect={handleGameSelect} />
+      )}
+      {selectedGame && (
+        <SpotifyIntegration selectedGame={selectedGame} />
+      )}
       {SpotifyIntegration}
-      <SpotifyIntegration selectedGame={selectedGame} />
+    
+
     </div>
   );
 };
@@ -37,4 +52,4 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-export default App
+export default App;

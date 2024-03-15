@@ -15,23 +15,22 @@ const SpotifyIntegration = ({ selectedGame }) => {
         setLoading(true);
 
         if (!isAuthenticated) {
+          loginWithRedirect();
           return;
         }
 
         const accessToken = await getAccessTokenSilently();
 
-        // Get keywords and genre from selected game
         const { keywords, genre } = selectedGame;
-
-        // Get Spotify username
         const spotifyUsername = user.nickname;
-
-        // Create playlist name using login details
         const playlistName = `${spotifyUsername}'s ${selectedGame.name} Playlist`;
+
+        // Combine keywords and genre into a single string
+        const playlistDescription = `Playlist based on selected game: ${selectedGame.name}. Genres: ${genre}. Keywords: ${keywords.join(', ')}`;
 
         const playlistResponse = await axios.post(`https://api.spotify.com/v1/users/${spotifyUsername}/playlists`, {
           name: playlistName,
-          description: `Playlist based on selected game: ${selectedGame.name}`,
+          description: playlistDescription,
           public: true
         }, {
           headers: {
@@ -52,7 +51,7 @@ const SpotifyIntegration = ({ selectedGame }) => {
     if (selectedGame) {
       fetchData();
     }
-  }, [getAccessTokenSilently, isAuthenticated, selectedGame, user]);
+  }, [getAccessTokenSilently, isAuthenticated, loginWithRedirect, selectedGame, user]);
 
   return (
     <div>

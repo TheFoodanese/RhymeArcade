@@ -1,4 +1,7 @@
+
 // GameSelection.jsx
+
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -6,6 +9,7 @@ const GameSelection = ({ platform, onSelect }) => {
   const [games, setGames] = useState([]);
 
   useEffect(() => {
+
     const fetchGames = async () => {
       try {
         const response = await axios.get(`https://gamedatabasestefan-skliarovv1.p.rapidapi.com/getGames`, {
@@ -34,14 +38,31 @@ const GameSelection = ({ platform, onSelect }) => {
         }));
 
         setGames(gamesWithKeywords);
+
+    // Get game list
+    const fetchGames = async () => {
+      try {
+        const response = await axios.get('https://api.igdb.com/v4/games', {
+          headers: {
+            'Client-ID': 'dxfcuakih9y23imizkdp02z16ekbds',
+            'Authorization': `Bearer Yfx9wlhmzfpx8n0h69n202ksrr68pkr`,
+            'Accept': 'application/json'
+          },
+          data: `fields name; where platforms = ${platform.id};`
+        });
+        setGames(response.data);
       } catch (error) {
         console.error('Error fetching games:', error);
       }
     };
 
+
     if (platform) {
       fetchGames();
     }
+
+    fetchGames();
+
   }, [platform]);
 
   return (

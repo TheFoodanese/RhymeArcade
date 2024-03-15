@@ -6,26 +6,23 @@ import GameSelection from './GameSelection';
 import SpotifyIntegration from './SpotifyIntegration';
 import './App.css'
 
-const App = () => {
-  const [selectedPlatform, setSelectedPlatform] = useState(null);
-  const [selectedGame, setSelectedGame] = useState(null);
+function App() {
+  const [selectedPlatform, setSelectedPlatform] = React.useState(null);
+  const [selectedGame, setSelectedGame] = React.useState(null);
 
-  const handlePlatformSelect = (platform) => {
-    setSelectedPlatform(platform);
-  };
-
-  const handleGameSelect = (game) => {
-    setSelectedGame(game);
-  };
 
   return (
     <div>
       <h1>Welcome to Rhyme Arcade!</h1>
-       <div className="outer-rec">
+      <div className="outer-rec">
         <div className='inner-rec'>
           <h1>Please Select your Console</h1>
         </div>
       </div>
+
+      {!selectedPlatform && <PlatformSelection onSelect={setSelectedPlatform} />}
+      {selectedPlatform && !selectedGame && <GameSelection platform={selectedPlatform} onSelect={setSelectedGame} />}
+      {selectedGame && <SpotifyIntegration selectedGame={selectedGame} />}
 
       <PlatformSelection onSelect={handlePlatformSelect} />
       {selectedPlatform && (
@@ -37,19 +34,9 @@ const App = () => {
       {SpotifyIntegration}
     
 
+
     </div>
   );
-};
-
-ReactDOM.render(
-  <Auth0Provider
-    domain="dev-6ziljfb0z6s42dae.us.auth0.com"
-    clientId="FKcS6yZI6zIfbHR4FRhUAM8R0hSkDFre"
-    redirectUri={window.location.origin}
-  >
-    <App />
-  </Auth0Provider>,
-  document.getElementById('root')
-);
+}
 
 export default App;

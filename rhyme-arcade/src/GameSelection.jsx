@@ -25,24 +25,57 @@ const GameSelection = ({ onSelect }) => {
   const [games, setGames] = useState([]); // State to store fetched games data
   const [loading, setLoading] = useState(false); // State to track loading status
   const [error, setError] = useState(''); // State to store error message if any
+  const [filteredGames, setFilteredGames] = useState([]);
 
-  // Effect hook to fetch games data when the component mounts
+
+  // // Effect hook to fetch games data when the component mounts
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       setLoading(true); // Set loading to true before fetching data
+  //       const data = await fetchGames(); // Fetch games data from the API
+  //       setGames(data.results); // Set fetched games data to the state
+  //     } catch (error) {
+  //       console.error('Error fetching games:', error);
+  //       setError('Error fetching games. Please try again.'); // Set error message if fetching fails
+  //     } finally {
+  //       setLoading(false); // Set loading to false after fetching data
+  //     }
+  //   };
+
+  //   fetchData(); // Invoke fetchData function
+  // }, []); // Dependency array to run the effect only once when the component mounts
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true); // Set loading to true before fetching data
-        const data = await fetchGames(); // Fetch games data from the API
-        setGames(data.results); // Set fetched games data to the state
+        const data = await fetchGames();
+        console.log("data:",data);
+        // setGames(data.results);
+        const gameResults = data.results;
+        setGames(gameResults);
+        setLoading(false);
       } catch (error) {
-        console.error('Error fetching games:', error);
-        setError('Error fetching games. Please try again.'); // Set error message if fetching fails
-      } finally {
-        setLoading(false); // Set loading to false after fetching data
+        setLoading(false);
       }
     };
 
-    fetchData(); // Invoke fetchData function
-  }, []); // Dependency array to run the effect only once when the component mounts
+    fetchData();
+  }, []);
+
+  const handleSearch = () => {
+    if (!searchTerm.trim()) {
+        setFilteredGames([]);
+    } else {
+        const filteredGames = games.filter(game => game.name.toLowerCase().includes(searchTerm.toLowerCase()));
+        setFilteredGames(filteredGames);
+    }
+};
+
+  const handleChange = (event) => {
+    setSearchTerm(event.target.value);
+    console.log(event.target.value);
+};
 
   // Settings for the Slider component
   const settings = {
@@ -77,12 +110,25 @@ const GameSelection = ({ onSelect }) => {
   return (
     <div>
       <h2>Select a Game:</h2>
+      <input type="text" value={searchTerm} onChange={handleChange} placeholder="Search for a game" />
+      <button onClick={handleSearch}>Search</button>
       {loading && <p>Loading games...</p>} {/* Display loading message while fetching data */}
       {error && <p>{error}</p>} {/* Display error message if fetching fails */}
       <Slider {...settings}> {/* Slider component to display games */}
         {/* Map through fetched games data and render game items */}
         {games.map((game) => (
           <div key={game.id} onClick={() => onSelect(game)}> {/* Handle click event for game selection */}
+          <div>
+            {filteredGames.length > 0 ? (
+            <ul>
+            {filteredGames.map((game) => (
+              <li key={game.id}>{game.name}</li>
+            ))}
+          </ul>
+          ) : (
+           <div>No games input </div>
+           )}
+          </div>
             <img src={game.background_image} alt={game.name} style={{ width: '100%' }} /> {/* Game image */}
             <p>{game.name}</p> {/* Game name */}
             <div>{renderPlatformIcons(game.platforms)}</div> {/* Render platform icons */}

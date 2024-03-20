@@ -63,19 +63,19 @@ const GameSelection = ({ onSelect }) => {
     fetchData();
   }, []);
 
-  const handleSearch = () => {
-    if (!searchTerm.trim()) {
-        setFilteredGames([]);
-    } else {
-        const filteredGames = games.filter(game => game.name.toLowerCase().includes(searchTerm.toLowerCase()));
-        setFilteredGames(filteredGames);
-    }
-};
+//   const handleSearch = () => {
+//     if (!searchTerm.trim()) {
+//         setFilteredGames([]);
+//     } else {
+//         const filteredGames = games.filter(game => game.name.toLowerCase().includes(searchTerm.toLowerCase()));
+//         setFilteredGames(filteredGames);
+//     }
+// };
 
-  const handleChange = (event) => {
-    setSearchTerm(event.target.value);
-    console.log(event.target.value);
-};
+//   const handleChange = (event) => {
+//     setSearchTerm(event.target.value);
+//     console.log(event.target.value);
+// };
 
   // Settings for the Slider component
   const settings = {

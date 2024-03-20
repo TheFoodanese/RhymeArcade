@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
+import './App.css';
 
 const SpotifyIntegration = ({ selectedGame }) => {
   // Authentication-related hooks from Auth0
@@ -113,7 +114,7 @@ const SpotifyIntegration = ({ selectedGame }) => {
         </div>
       )}
       {!isAuthenticated && (
-        <button onClick={() => loginWithRedirect({ screen_hint: 'login', connection: 'spotify' })}>
+        <button className='login' onClick={() => loginWithRedirect({ screen_hint: 'login', connection: 'spotify' })}>
           Login with Spotify
         </button>
       )}

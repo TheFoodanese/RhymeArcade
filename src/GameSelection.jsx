@@ -110,8 +110,8 @@ const GameSelection = ({ onSelect }) => {
   return (
     <div>
       <h2>Select a Game:</h2>
-      <input type="text" value={searchTerm} onChange={handleChange} placeholder="Search for a game" />
-      <button onClick={handleSearch}>Search</button>
+      {/* <input type="text" value={searchTerm} onChange={handleChange} placeholder="Search for a game" />
+      <button onClick={handleSearch}>Search</button> */}
       {loading && <p>Loading games...</p>} {/* Display loading message while fetching data */}
       {error && <p>{error}</p>} {/* Display error message if fetching fails */}
       <Slider {...settings}> {/* Slider component to display games */}

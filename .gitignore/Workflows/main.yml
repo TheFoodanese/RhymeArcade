@@ -39,4 +39,4 @@ jobs:
           NETLIFY_SITE_ID: ${{ b40feb6e-9774-4f7e-85d4-926db9b582bf }}
         with:
           args: deploy --dir=build --prod
-          secrets: '["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]'
+          secrets: '["nfp_br1MAv5387Quhe4JpU6jK1BRcUYKvSw2a129", "b40feb6e-9774-4f7e-85d4-926db9b582bf"]'

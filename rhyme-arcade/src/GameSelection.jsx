@@ -1,95 +1,15 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import { FaWindows, FaPlaystation, FaXbox, FaSteam } from 'react-icons/fa';
+import Slider from 'react-slick'; // Importing Slider component from react-slick library
+import 'slick-carousel/slick/slick.css'; // Importing slick carousel CSS
+import 'slick-carousel/slick/slick-theme.css'; // Importing slick carousel theme CSS
+import { FaWindows, FaPlaystation, FaXbox, FaSteam } from 'react-icons/fa'; // Importing platform icons from react-icons/fa
 
-const apiKey = '2e34e67511c14a3d880db20cf0570831'; 
+// Define API key and URL for fetching games data
+const apiKey = '2e34e67511c14a3d880db20cf0570831';
 const apiUrl = 'https://api.rawg.io/api';
-spotify
 
-export const fetchGames = async (page = 1, pageSize = 90) => {
-  try {
-    const response = await axios.get(`${apiUrl}/games?key=${apiKey}&page=${page}&page_size=${pageSize}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching games:', error);
-    throw error;
-  }
-};
-
-const GameSelection = ({ onSelect }) => {
-  const [games, setGames] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchGames();
-        setGames(data.results);
-      } catch (error) {
-        console.error('Error fetching games:', error);
-        setError('Error fetching games. Please try again.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    swipeToSlide: true,
-  };
-
-  // Function to render platform symbols based on game platforms
-  const renderPlatformIcons = (platforms) => {
-    return platforms.map((platform) => {
-      console.log('Platform:', platform.platform.name); 
-      switch (platform.platform.name.toLowerCase()) {
-        case 'pc':
-          return <FaWindows key={platform.platform.id} />;
-        case 'playstation':
-          return <FaPlaystation key={platform.platform.id} />;
-        case 'xbox':
-          return <FaXbox key={platform.platform.id} />;
-        case 'steam':
-          return <FaSteam key={platform.platform.id} />;
-        default:
-          return null;
-      }
-    });
-  };
-
-  return (
-    <div>
-      <h2>Select a Game:</h2>
-      {loading && <p>Loading games...</p>}
-      {error && <p>{error}</p>}
-      <Slider {...settings}>
-        {games.map((game) => (
-          <div key={game.id} onClick={() => onSelect(game)}>
-            <img src={game.background_image} alt={game.name} style={{ width: '100%' }} />
-            <p>{game.name}</p>
-            <div>{renderPlatformIcons(game.platforms)}</div> {/* platform icons */}
-          </div>
-        ))}
-      </Slider>
-    </div>
-  );
-};
-=======
- main
-
+// Function to fetch games data from the API
 export const fetchGames = async () => {
   try {
     const response = await axios.get(`${apiUrl}/games?key=${apiKey}`);
@@ -99,3 +19,78 @@ export const fetchGames = async () => {
     throw error;
   }
 };
+
+// GameSelection component responsible for displaying games and handling game selection
+const GameSelection = ({ onSelect }) => {
+  const [games, setGames] = useState([]); // State to store fetched games data
+  const [loading, setLoading] = useState(false); // State to track loading status
+  const [error, setError] = useState(''); // State to store error message if any
+
+  // Effect hook to fetch games data when the component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true); // Set loading to true before fetching data
+        const data = await fetchGames(); // Fetch games data from the API
+        setGames(data.results); // Set fetched games data to the state
+      } catch (error) {
+        console.error('Error fetching games:', error);
+        setError('Error fetching games. Please try again.'); // Set error message if fetching fails
+      } finally {
+        setLoading(false); // Set loading to false after fetching data
+      }
+    };
+
+    fetchData(); // Invoke fetchData function
+  }, []); // Dependency array to run the effect only once when the component mounts
+
+  // Settings for the Slider component
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    swipeToSlide: true,
+  };
+
+  // Function to render platform icons based on game platforms
+  const renderPlatformIcons = (platforms) => {
+    return platforms.map((platform) => {
+      console.log('Platform:', platform.platform.name); // Log platform name to console
+      switch (platform.platform.name.toLowerCase()) {
+        case 'pc':
+          return <FaWindows key={platform.platform.id} />; // Render Windows icon for PC platform
+        case 'playstation':
+          return <FaPlaystation key={platform.platform.id} />; // Render PlayStation icon for PlayStation platform
+        case 'xbox':
+          return <FaXbox key={platform.platform.id} />; // Render Xbox icon for Xbox platform
+        case 'steam':
+          return <FaSteam key={platform.platform.id} />; // Render Steam icon for Steam platform
+        default:
+          return null;
+      }
+    });
+  };
+
+  // JSX representing the GameSelection component UI
+  return (
+    <div>
+      <h2>Select a Game:</h2>
+      {loading && <p>Loading games...</p>} {/* Display loading message while fetching data */}
+      {error && <p>{error}</p>} {/* Display error message if fetching fails */}
+      <Slider {...settings}> {/* Slider component to display games */}
+        {/* Map through fetched games data and render game items */}
+        {games.map((game) => (
+          <div key={game.id} onClick={() => onSelect(game)}> {/* Handle click event for game selection */}
+            <img src={game.background_image} alt={game.name} style={{ width: '100%' }} /> {/* Game image */}
+            <p>{game.name}</p> {/* Game name */}
+            <div>{renderPlatformIcons(game.platforms)}</div> {/* Render platform icons */}
+          </div>
+        ))}
+      </Slider>
+    </div>
+  );
+};
+
+export default GameSelection; // Export the GameSelection component

@@ -36,3 +36,35 @@ h1{
   font-size: 20px;
   color: var(--fourth-colour);
 }
+.game-item {
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.game-item:hover {
+  background-color: #f0f0f0;
+}
+
+.game-image {
+  display: none; 
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100px; 
+  height: auto; 
+}
+
+.game-item:hover .game-image {
+  display: block;
+}
+
+.game-selection {
+  max-height: 300px; 
+  overflow: hidden;
+}
+
+.game-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}

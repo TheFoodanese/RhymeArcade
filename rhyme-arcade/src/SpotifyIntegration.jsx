@@ -3,69 +3,107 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const SpotifyIntegration = ({ selectedGame }) => {
-  const { getAccessTokenSilently, isAuthenticated, loginWithRedirect, user } = useAuth0();
-  const [playlistUrl, setPlaylistUrl] = useState('');
+  const { isAuthenticated, user, logout, getAccessTokenSilently, loginWithRedirect } = useAuth0();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [spotifyUserId, setSpotifyUserId] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setError('');
         setLoading(true);
 
         if (!isAuthenticated) {
-          return;
+          throw new Error('User is not authenticated.');
         }
 
-        const accessToken = await getAccessTokenSilently();
+        // Check if Spotify user ID is available in Auth0 user metadata
+        if (user && user.sub && user.sub.split('|').length > 1) {
+          const metadataResponse = await axios.get(`https://your-auth0-domain/userinfo`, {
+            headers: {
+              Authorization: `Bearer ${user.sub}`,
+            },
+          });
 
-        // Get keywords and genre from selected game
-        const { keywords, genre } = selectedGame;
-
-        // Get Spotify username
-        const spotifyUsername = user.nickname;
-
-        // Create playlist name using login details
-        const playlistName = `${spotifyUsername}'s ${selectedGame.name} Playlist`;
-
-        const playlistResponse = await axios.post(`https://api.spotify.com/v1/users/${spotifyUsername}/playlists`, {
-          name: playlistName,
-          description: `Playlist based on selected game: ${selectedGame.name}`,
-          public: true
-        }, {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
+          const spotifyId = metadataResponse.data && metadataResponse.data['https://spotify/user_id'];
+          
+          if (!spotifyId) {
+            throw new Error('Spotify user ID not found.');
           }
-        });
 
-        setPlaylistUrl(playlistResponse.data.external_urls.spotify);
+          setSpotifyUserId(spotifyId);
+        } else {
+          throw new Error('Invalid user or Spotify user ID not found.');
+        }
       } catch (error) {
-        console.error('Error:', error);
-        setError('Error creating playlist. Please try again.');
+        console.error('Error fetching Spotify user ID:', error);
+        setError('Error fetching Spotify user ID. Please try again.');
       } finally {
         setLoading(false);
       }
     };
 
-    if (selectedGame) {
+    if (isAuthenticated) {
       fetchData();
     }
-  }, [getAccessTokenSilently, isAuthenticated, selectedGame, user]);
+  }, [isAuthenticated, user]);
+
+  const createPlaylist = async () => {
+    try {
+      setLoading(true);
+
+      if (!isAuthenticated) {
+        throw new Error('User is not authenticated.');
+      }
+
+      const accessToken = await getAccessTokenSilently();
+
+      // Create playlist using the Spotify user ID
+      const response = await axios.post(
+        `https://api.spotify.com/v1/users/${spotifyUserId}/playlists`,
+        {
+          name: `${selectedGame.name} Playlist`,
+          description: `Playlist created from Rhyme Arcade for ${selectedGame.name}.`,
+          public: true,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      console.log('Playlist created with ID:', response.data.id);
+    } catch (error) {
+      console.error('Error creating playlist:', error);
+      setError('Error creating playlist. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = () => {
+    logout({ returnTo: window.location.origin });
+  };
 
   return (
     <div>
-      {!isAuthenticated && (
-        <button onClick={() => loginWithRedirect()}>Login to Spotify</button>
-      )}
       {loading && <p>Loading...</p>}
       {error && <p>{error}</p>}
-      {playlistUrl && (
+      {isAuthenticated && (
         <div>
-          <h2>Playlist Created</h2>
-          <p>Listen to your playlist <a href={playlistUrl} target="_blank" rel="noopener noreferrer">here</a></p>
+          <p>Logged in as {user.name}</p>
+          {spotifyUserId && (
+            <button onClick={createPlaylist}>Create Playlist</button>
+          )}
+          <button onClick={handleLogout}>Logout</button>
         </div>
+      )}
+      {!isAuthenticated && (
+        <button onClick={() => loginWithRedirect({ screen_hint: 'login', connection: 'spotify' })}>
+          Login with Spotify
+        </button>
       )}
     </div>
   );

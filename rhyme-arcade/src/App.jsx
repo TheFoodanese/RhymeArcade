@@ -1,18 +1,25 @@
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
-import { Auth0Provider } from '@auth0/auth0-react';
-import PlatformSelection from './PlatformSelection';
-import GameSelection from './GameSelection';
+// App.jsx
+import React, { useState, useEffect } from 'react';
+import GameSelection, { fetchGames } from './GameSelection';
 import SpotifyIntegration from './SpotifyIntegration';
-import './App.css'
+import './App.css';
 
-const App = () => {
-  const [selectedPlatform, setSelectedPlatform] = useState(null);
+function App() {
   const [selectedGame, setSelectedGame] = useState(null);
+  const [games, setGames] = useState([]);
 
-  const handlePlatformSelect = (platform) => {
-    setSelectedPlatform(platform);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchGames();
+        setGames(data.results);
+      } catch (error) {
+        console.error('Error fetching games:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleGameSelect = (game) => {
     setSelectedGame(game);
@@ -21,35 +28,11 @@ const App = () => {
   return (
     <div>
       <h1>Welcome to Rhyme Arcade!</h1>
-       <div className="outer-rec">
-        <div className='inner-rec'>
-          <h1>Please Select your Console</h1>
-        </div>
-      </div>
-
-      <PlatformSelection onSelect={handlePlatformSelect} />
-      {selectedPlatform && (
-        <GameSelection platform={selectedPlatform} onSelect={handleGameSelect} />
-      )}
-      {selectedGame && (
-        <SpotifyIntegration selectedGame={selectedGame} />
-      )}
-      {SpotifyIntegration}
-    
-
+      {!games.length && <p>Loading games...</p>}
+      {!!games.length && !selectedGame && <GameSelection games={games} onSelect={handleGameSelect} />}
+      {selectedGame && <SpotifyIntegration selectedGame={selectedGame} />}
     </div>
   );
-};
-
-ReactDOM.render(
-  <Auth0Provider
-    domain="dev-6ziljfb0z6s42dae.us.auth0.com"
-    clientId="FKcS6yZI6zIfbHR4FRhUAM8R0hSkDFre"
-    redirectUri={window.location.origin}
-  >
-    <App />
-  </Auth0Provider>,
-  document.getElementById('root')
-);
+}
 
 export default App;

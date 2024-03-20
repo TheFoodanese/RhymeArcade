@@ -14,7 +14,12 @@ const SpotifyIntegration = ({ selectedGame }) => {
         setLoading(true);
 
         if (!isAuthenticated) {
+ spotify
           throw new Error('User is not authenticated.');
+=======
+          loginWithRedirect();
+          return;
+ main
         }
 
         // Check if Spotify user ID is available in Auth0 user metadata
@@ -24,11 +29,28 @@ const SpotifyIntegration = ({ selectedGame }) => {
               Authorization: `Bearer ${user.sub}`,
             },
           });
-
+ spotify
           const spotifyId = metadataResponse.data && metadataResponse.data['https://spotify/user_id'];
           
           if (!spotifyId) {
             throw new Error('Spotify user ID not found.');
+=======
+        const { keywords, genre } = selectedGame;
+        const spotifyUsername = user.nickname;
+        const playlistName = `${spotifyUsername}'s ${selectedGame.name} Playlist`;
+
+        // Combine keywords and genre into a single string
+        const playlistDescription = `Playlist based on selected game: ${selectedGame.name}. Genres: ${genre}. Keywords: ${keywords.join(', ')}`;
+
+        const playlistResponse = await axios.post(`https://api.spotify.com/v1/users/${spotifyUsername}/playlists`, {
+          name: playlistName,
+          description: playlistDescription,
+          public: true
+        }, {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+main
           }
 
           setSpotifyUserId(spotifyId);
@@ -46,6 +68,7 @@ const SpotifyIntegration = ({ selectedGame }) => {
     if (isAuthenticated) {
       fetchData();
     }
+ spotify
   }, [isAuthenticated, user]);
 
   const createPlaylist = async () => {
@@ -86,6 +109,8 @@ const SpotifyIntegration = ({ selectedGame }) => {
   const handleLogout = () => {
     logout({ returnTo: window.location.origin });
   };
+=======
+ 
 
   return (
     <div>

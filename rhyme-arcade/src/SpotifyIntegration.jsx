@@ -3,23 +3,25 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const SpotifyIntegration = ({ selectedGame }) => {
+  // Authentication-related hooks from Auth0
   const { isAuthenticated, user, logout, getAccessTokenSilently, loginWithRedirect } = useAuth0();
+  
+  // State variables for loading status, errors, and Spotify user ID
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [spotifyUserId, setSpotifyUserId] = useState('');
 
+  // Effect hook to fetch Spotify user ID
   useEffect(() => {
+    // Function to fetch Spotify user ID
     const fetchData = async () => {
       try {
         setLoading(true);
 
+        // Redirect to login if user is not authenticated
         if (!isAuthenticated) {
- spotify
-          throw new Error('User is not authenticated.');
-=======
           loginWithRedirect();
           return;
- main
         }
 
         // Check if Spotify user ID is available in Auth0 user metadata
@@ -29,28 +31,11 @@ const SpotifyIntegration = ({ selectedGame }) => {
               Authorization: `Bearer ${user.sub}`,
             },
           });
- spotify
+
           const spotifyId = metadataResponse.data && metadataResponse.data['https://spotify/user_id'];
-          
+
           if (!spotifyId) {
             throw new Error('Spotify user ID not found.');
-=======
-        const { keywords, genre } = selectedGame;
-        const spotifyUsername = user.nickname;
-        const playlistName = `${spotifyUsername}'s ${selectedGame.name} Playlist`;
-
-        // Combine keywords and genre into a single string
-        const playlistDescription = `Playlist based on selected game: ${selectedGame.name}. Genres: ${genre}. Keywords: ${keywords.join(', ')}`;
-
-        const playlistResponse = await axios.post(`https://api.spotify.com/v1/users/${spotifyUsername}/playlists`, {
-          name: playlistName,
-          description: playlistDescription,
-          public: true
-        }, {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-main
           }
 
           setSpotifyUserId(spotifyId);
@@ -65,12 +50,13 @@ main
       }
     };
 
+    // Fetch data if user is authenticated
     if (isAuthenticated) {
       fetchData();
     }
- spotify
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user, loginWithRedirect]);
 
+  // Function to create a playlist
   const createPlaylist = async () => {
     try {
       setLoading(true);
@@ -79,6 +65,7 @@ main
         throw new Error('User is not authenticated.');
       }
 
+      // Get access token
       const accessToken = await getAccessTokenSilently();
 
       // Create playlist using the Spotify user ID
@@ -106,12 +93,12 @@ main
     }
   };
 
+  // Function to handle logout
   const handleLogout = () => {
     logout({ returnTo: window.location.origin });
   };
-=======
- 
 
+  // JSX rendering
   return (
     <div>
       {loading && <p>Loading...</p>}

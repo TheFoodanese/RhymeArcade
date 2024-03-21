@@ -35,23 +35,33 @@ function App() {
   // JSX rendering
   return (
     <div style={{ backgroundImage: "url('https://i.gifer.com/WMV.gif')", backgroundSize: 'cover', margin: 0, padding: 0, width: '100vw', height: '100vh' }}>
-    <header>
-      <h1>Welcome to Rhyme Arcade!</h1>
-    </header>
-    <div>
-      <div className='outer-rec'>
-        <div className='inner-rec'>
-          {/* Display loading message if games data is not loaded yet */}
-          {!games.length && <p>Loading games...</p>}
-          {/* Display GameSelection component if games data is loaded and no game is selected */}
-          {!!games.length && !selectedGame && <GameSelection games={games} onSelect={handleGameSelect} />}
-          {/* Display SpotifyIntegration component if a game is selected */}
-          {selectedGame && <SpotifyIntegration selectedGame={selectedGame} />}
+      <header>
+        <h1>Welcome to Rhyme Arcade!</h1>
+      </header>
+      <div>
+        <div className='outer-rec'>
+          <div className='inner-rec'>
+            {/* Display loading message if games data is not loaded yet */}
+            {!games.length && <p>Loading games...</p>}
+            {/* Display GameSelection component if games data is loaded and no game is selected */}
+            {!!games.length && !selectedGame && <GameSelection games={games} onSelect={handleGameSelect} />}
+            {/* Display SpotifyIntegration component if a game is selected */}
+            {selectedGame && <SpotifyIntegration selectedGame={selectedGame} />}
+            {/* Render game images */}
+            {!!games.length && !selectedGame && (
+              <div className="game-selection">
+                {games.map((game) => (
+                  <div key={game.id} className="game-image-container">
+                    <img src={game.image} alt={game.name} className="game-image" />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
 }
 
 export default App;

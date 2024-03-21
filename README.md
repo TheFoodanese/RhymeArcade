@@ -8,22 +8,26 @@ Our platform empowers you to curate the perfect playlist tailored to your gaming
 Are you ready to embark on a musical adventure? Join us on this musical journey through the realms of gaming and let Rhyme Arcade enhance your gaming experience like never before. Let Rhyme Arcade be your guide and start exploring today!
 
 # Features
-•Genre-based Playlists: Users can select a genre of games or a gaming console, and Rhyme Arcade will generate a Spotify playlist curated based on the selected genre or console.
+•Genre-based Playlists: Users can select a genre of games or a gaming console, and Rhyme Arcade will generate a Spotify playlist curated based on the selected game.
 
-•Keyword Analysis: Rhyme Arcade analyzes keywords associated with games to ensure the playlist accurately reflects the chosen genre or console.
+•Keyword Analysis: Rhyme Arcade analyzes keywords associated with games to ensure the playlist accurately reflects the chosen game.
 
 
 # Installation
 Rhyme Arcade is a web-based platform and does not require any installation. Simply access the website through your preferred web browser to start using it. Below is a screenshopt of the Rhyme Arcade application.
 
 
-![Mock up](https://github.com/TheFoodanese/RhymeArcade/assets/152094029/b63c6337-3267-48c2-b124-723bd34aa043)
+
+
+![GIF Recording 2024-03-21 at 6 54 11 pm](https://github.com/TheFoodanese/RhymeArcade/assets/152094029/1c2b1026-2c98-4b91-b8c9-bab1c3bea676)
+
+
 
 
 
 
 ## Getting Started
-To get started with CrowdSurf, simply visit our website CrowdSurfand you can start exploring events, purchasing tickets, and planning your next adventure.
+To get started with Rhyme Arcade, simply visit our website Rhyme Arcade, you can start exploring games and playlists.
 
 # Technologies Used
 •JavaScript: Core programming language used for both front-end and back-end development.
@@ -32,16 +36,16 @@ To get started with CrowdSurf, simply visit our website CrowdSurfand you can sta
 
 •Node.js: JavaScript runtime environment used for server-side development and managing dependencies.
 
-•IGDB API: Integration with the IGDB (Internet Game Database) API to retrieve game information and associated keywords.
+•RawG API: The RAWG Video Games Database API provides comprehensive data about video games, including information on games, platforms, genres, developers, publishers, and more.
 
 •Spotify API: Integration with the Spotify API to generate and manage playlists based on user preferences.
 
 •Deployed using Netlify  
 
 # Usage
-Upon launching Rhyme Arcade, users will be greeted with a homepage prompting them to select a genre of games or a gaming console.
+Upon launching Rhyme Arcade, users will be greeted with a homepage prompting them to select a a featured game.
 
-Once a selection is made, Rhyme Arcade will generate a Spotify playlist tailored to the chosen genre or console.
+Once a selection is made, Rhyme Arcade will generate a Spotify playlist tailored to the chosen game.
 
 Users can then listen to the playlist directly on Spotify or save it to their account for future use.
 
@@ -63,7 +67,6 @@ Netlify: https://rhymearcade.netlify.app
 
 GitHub Repository: https://github.com/TheFoodanese/RhymeArcade
 
-Deployed GitHub Site: 
 
 # Collaborators
 Zoe Sobowale: https://github.com/ZoeSobowale

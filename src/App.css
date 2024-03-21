@@ -79,26 +79,49 @@ p{
 }
 
 .game-selection {
-  /* Set a fixed height for all game selection elements */
   height: 300px;
   overflow: hidden;
 }
 
 .game-image-container {
-  /* Ensure a fixed aspect ratio for the container */
   width: 100%;
   height: 100%;
   position: relative;
 }
 
 .game-image {
-  /* Ensure images fill the container without distortion */
   width: 200px;
   height: 200px;
-  object-fit: fill; /* Fill the container without distortion */
-  object-position: center; /* Center the image within the container */
+  object-fit: fill; 
+  object-position: center;
 }
 
+
+
+.playlist-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.playlist-item {
+  background-color: var(--third-colour); 
+  color: #fff; 
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.playlist-item h3 {
+  margin-top: 0;
+}
+
+.playlist-item p {
+  margin-bottom: 0;
+}
 
 .container {
   display: flex;

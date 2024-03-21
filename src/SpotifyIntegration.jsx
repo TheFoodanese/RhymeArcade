@@ -113,10 +113,12 @@ const SpotifyIntegration = ({ selectedGame }) => {
           <button onClick={handleLogout}>Logout</button>
         </div>
       )}
-      {!isAuthenticated && (
-        <button className='login' onClick={() => loginWithRedirect({ screen_hint: 'login', connection: 'spotify' })}>
-          Login with Spotify
-        </button>
+    {!isAuthenticated && (
+        <div className="container">
+          <button className='login' onClick={() => loginWithRedirect({ screen_hint: 'login', connection: 'spotify' })}>
+            Login with Spotify
+          </button>
+        </div>
       )}
     </div>
   );

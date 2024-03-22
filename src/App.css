@@ -1,9 +1,8 @@
+/* App.css */
+
 @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+:root {
   --first-colour: #e4f1ff; /* setting root colours */
   --second-colour: #aed2ff;
   --third-colour: #800dd3;
@@ -19,8 +18,15 @@ body {
   height: 100vh;
 }
 
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
 .outer-rec {
-  width: 1200px;
+  width: 100%;
+  max-width: 1200px;
   height: 400px;
   border-radius: 60px;
   padding: 20px;
@@ -28,34 +34,36 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 0 auto;
 }
 
 .inner-rec {
-  width: 1000px;
+  width: 100%;
+  max-width: 1000px;
   height: 350px;
   border-radius: 25px;
   padding: 20px;
   background-color: var(--second-colour);
-
 }
 
-h1{
+h1 {
   text-align: center;
   font-family: "VT323", monospace;
   font-size: 40px;
   color: var(--fourth-colour);
 }
 
-h2{
+h2 {
   font-size: 30px;
   text-align: center;
   font-family: "VT323", monospace;
 }
 
-p{
+p {
   text-align: center;
   font-family: "VT323", monospace;
 }
+
 .game-item {
   cursor: pointer;
   transition: background-color 0.3s;
@@ -66,12 +74,12 @@ p{
 }
 
 .game-image {
-  display: none; 
+  display: none;
   position: absolute;
   top: 100%;
   left: 0;
-  width: 100px; 
-  height: auto; 
+  width: 100px;
+  height: auto;
 }
 
 .game-item:hover .game-image {
@@ -92,11 +100,9 @@ p{
 .game-image {
   width: 200px;
   height: 200px;
-  object-fit: fill; 
+  object-fit: cover;
   object-position: center;
 }
-
-
 
 .playlist-container {
   display: flex;
@@ -107,8 +113,8 @@ p{
 }
 
 .playlist-item {
-  background-color: var(--third-colour); 
-  color: #fff; 
+  background-color: var(--third-colour);
+  color: #fff;
   padding: 20px;
   border-radius: 10px;
   width: 300px;
@@ -127,23 +133,42 @@ p{
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 40vh; 
-  background-color: var(--second-colour); 
+  height: 40vh;
+  background-color: var(--second-colour);
 }
 
-
-.login{
+.login {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100px; 
-  width:300px;
+  height: 100px;
+  width: 300px;
   background-color: var(--fourth-colour);
-  color: #fff; 
+  color: #fff;
   border: none;
-  border-radius: 20px; 
+  border-radius: 20px;
   font-family: "VT323", monospace;
   font-size: 30px;
   cursor: pointer;
   transition: background-color 0.3s;
+}
+
+.playlist-link {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Ensure the link takes up the full height of the playlist item */
+}
+
+.playlist-item {
+  text-align: center; /* Center the content */
+  padding: 50px; /* Add padding */
+}
+
+.playlist-item img {
+  width: 100%; /* Ensure the image fills its container */
+  height: 250px; /* Maintain aspect ratio */
+}
+
+.playlist-item p {
+  margin: 40px 40px 0; /* Adjust spacing for the title */
 }

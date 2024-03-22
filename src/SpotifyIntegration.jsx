@@ -1,124 +1,92 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useAuth0 } from '@auth0/auth0-react';
-import './App.css';
+import { useLocation, useHistory } from 'react-router-dom';
+import { redirectToAuthCodeFlow, getAccessToken, refreshAccessToken, clearTokens } from './spotifyAuth';
 
-const SpotifyIntegration = ({ selectedGame }) => {
-  // Authentication-related hooks from Auth0
-  const { isAuthenticated, user, logout, getAccessTokenSilently, loginWithRedirect } = useAuth0();
-  
-  // State variables for loading status, errors, and Spotify user ID
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [spotifyUserId, setSpotifyUserId] = useState('');
+const SpotifyIntegration = () => {
+  const location = useLocation();
+  const history = useHistory();
 
-  // Effect hook to fetch Spotify user ID
+  const gameName = location.state?.gameName;
+  const [playlists, setPlaylists] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   useEffect(() => {
-    // Function to fetch Spotify user ID
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-
-        // Redirect to login if user is not authenticated
-        if (!isAuthenticated) {
-          loginWithRedirect();
+    const checkLoginStatus = async () => {
+      const accessToken = localStorage.getItem('accessToken');
+      const expiresIn = localStorage.getItem('expiresIn');
+      if (!accessToken || !expiresIn || Date.now() > parseInt(expiresIn, 10)) {
+        if (!location.search.includes('code=')) {
+          setIsLoggedIn(false);
           return;
         }
 
-        // Check if Spotify user ID is available in Auth0 user metadata
-        if (user && user.sub && user.sub.split('|').length > 1) {
-          const metadataResponse = await axios.get(`https://your-auth0-domain/userinfo`, {
-            headers: {
-              Authorization: `Bearer ${user.sub}`,
-            },
-          });
-
-          const spotifyId = metadataResponse.data && metadataResponse.data['https://spotify/user_id'];
-
-          if (!spotifyId) {
-            throw new Error('Spotify user ID not found.');
-          }
-
-          setSpotifyUserId(spotifyId);
-        } else {
-          throw new Error('Invalid user or Spotify user ID not found.');
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        if (code) {
+          await getAccessToken("60e38dde15b847ddb34db989a19e4c97", code);
+          setIsLoggedIn(true);
         }
-      } catch (error) {
-        console.error('Error fetching Spotify user ID:', error);
-        setError('Error fetching Spotify user ID. Please try again.');
-      } finally {
-        setLoading(false);
+      } else {
+        setIsLoggedIn(true);
       }
     };
 
-    // Fetch data if user is authenticated
-    if (isAuthenticated) {
-      fetchData();
-    }
-  }, [isAuthenticated, user, loginWithRedirect]);
+    checkLoginStatus();
+  }, [location]);
 
-  // Function to create a playlist
-  const createPlaylist = async () => {
-    try {
-      setLoading(true);
-
-      if (!isAuthenticated) {
-        throw new Error('User is not authenticated.');
+  useEffect(() => {
+    const checkAndRefreshToken = async () => {
+      const expiresIn = localStorage.getItem('expiresIn');
+      if (!expiresIn || Date.now() > parseInt(expiresIn, 10)) {
+        await refreshAccessToken("60e38dde15b847ddb34db989a19e4c97");
       }
+    };
 
-      // Get access token
-      const accessToken = await getAccessTokenSilently();
+    const fetchPlaylists = async () => {
+      if (!isLoggedIn || !gameName) return;
 
-      // Create playlist using the Spotify user ID
-      const response = await axios.post(
-        `https://api.spotify.com/v1/users/${spotifyUserId}/playlists`,
-        {
-          name: `${selectedGame.name} Playlist`,
-          description: `Playlist created from Rhyme Arcade for ${selectedGame.name}.`,
-          public: true,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
+      await checkAndRefreshToken();
+      const accessToken = localStorage.getItem('accessToken');
+      const headers = new Headers({
+        'Authorization': `Bearer ${accessToken}`,
+      });
+
+      try {
+        console.log('Fetching playlists for game:', gameName);
+        const response = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(gameName)}&type=playlist&limit=50`, { headers });
+        const data = await response.json();
+        if (data.playlists) {
+          setPlaylists(data.playlists.items);
+        } else {
+          console.error('Spotify API error:', data.error);
         }
-      );
+      } catch (error) {
+        console.error('Error searching for playlists:', error);
+      }
+    };
 
-      console.log('Playlist created with ID:', response.data.id);
-    } catch (error) {
-      console.error('Error creating playlist:', error);
-      setError('Error creating playlist. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchPlaylists();
+  }, [gameName, isLoggedIn]);
 
-  // Function to handle logout
   const handleLogout = () => {
-    logout({ returnTo: window.location.origin });
+    clearTokens();
+    setIsLoggedIn(false);
   };
 
-  // JSX rendering
+  const navigateToPlaylistsPage = () => {
+    history.push('/playlists', { playlists });
+  };
+
   return (
     <div>
-      {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
-      {isAuthenticated && (
-        <div>
-          <p>Logged in as {user.name}</p>
-          {spotifyUserId && (
-            <button onClick={createPlaylist}>Create Playlist</button>
-          )}
+      {!isLoggedIn ? (
+        <button onClick={() => redirectToAuthCodeFlow("60e38dde15b847ddb34db989a19e4c97")}>Login with Spotify</button>
+      ) : (
+        <>
           <button onClick={handleLogout}>Logout</button>
-        </div>
-      )}
-    {!isAuthenticated && (
-        <div className="container">
-          <button className='login' onClick={() => loginWithRedirect({ screen_hint: 'login', connection: 'spotify' })}>
-            Login with Spotify
-          </button>
-        </div>
+          <h2>Playlists for {gameName}:</h2>
+          <button onClick={navigateToPlaylistsPage}>View Playlists</button>
+        </>
       )}
     </div>
   );

@@ -125,7 +125,7 @@ p {
   margin-top: 0;
 }
 
-.playlist-item p {
+.playlist-item h2 {
   margin-bottom: 0;
 }
 
@@ -161,12 +161,12 @@ p {
 
 .playlist-item {
   text-align: center; /* Center the content */
-  padding: 50px; /* Add padding */
+  padding: 20px; /* Add padding */
 }
 
 .playlist-item img {
-  width: 100%; /* Ensure the image fills its container */
-  height: 250px; /* Maintain aspect ratio */
+  width: 200px; /* Ensure the image fills its container */
+  height: 200px; /* Maintain aspect ratio */
 }
 
 .playlist-item p {

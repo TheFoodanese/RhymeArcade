@@ -18,7 +18,9 @@ const PlaylistsPage = ({ location }) => {
 
   return (
     <div>
-      <h2>We think you'll love..</h2>
+      <div className="outer-rec"> {/* Apply the outer-rec style */}
+      <div className="inner-rec"> {/* Apply the inner-rec style */}
+      <h2 style={{ marginBottom: '10px', marginTop: '0px', fontSize: '18px'}}>We think you'll love..</h2> {/* Adjust margin bottom */}
       <Slider {...settings}>
         {playlists.map((playlist) => (
           <div key={playlist.id}>
@@ -35,6 +37,8 @@ const PlaylistsPage = ({ location }) => {
         <a href="http://localhost:5173">Start Over</a>
       </div>
     </div>
+  </div>
+  </div>
   );
 };
 

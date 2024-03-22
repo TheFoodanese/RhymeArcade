@@ -56,7 +56,8 @@ const GameSelection = () => {
   };
 
   return (
-    <div>
+    <div className="outer-rec"> {/* Apply the outer-rec style */}
+    <div className="inner-rec"> {/* Apply the inner-rec style */}
       <h2>Select a Game:</h2>
       {loading && <p>Loading games...</p>}
       {error && <p>{error}</p>}
@@ -74,6 +75,7 @@ const GameSelection = () => {
           </div>
         ))}
       </Slider>
+    </div>
     </div>
   );
 };
